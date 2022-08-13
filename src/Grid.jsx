@@ -14,6 +14,8 @@ export const Grid = (props) => {
             row={row}
             state={props.state}
             tiles={props.tiles}
+            toggleTile={props.toggleTile}
+            key={index}
           />
         );
       })}

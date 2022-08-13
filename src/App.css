@@ -21,7 +21,6 @@ body,
 }
 .Grid {
   align-self: center;
-  border: solid 1px black;
   display: flex;
   flex-direction: column;
 }
@@ -30,5 +29,6 @@ body,
   flex-direction: row;
 }
 .Tile {
-  border: solid 1px black;
+  border: solid 0.5px black;
+  flex-shrink: 0;
 }

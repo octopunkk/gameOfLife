@@ -12,6 +12,8 @@ export const Row = (props) => {
             tile={tile}
             state={props.state}
             tiles={props.tiles}
+            toggleTile={props.toggleTile}
+            key={index}
           />
         );
       })}
