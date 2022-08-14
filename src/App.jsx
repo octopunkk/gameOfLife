@@ -3,10 +3,12 @@ import { Grid } from "./Grid";
 
 import "./App.css";
 
+let intervalID;
+
 function App() {
   const [state, setState] = useState({
     gridSize: 800,
-    tilesPerRow: 50,
+    tilesPerRow: 10,
     updateInterval: 100,
     running: false,
   });
@@ -26,8 +28,6 @@ function App() {
     return newTiles;
   });
 
-  let intervalID;
-
   const toggleTile = (x, y) => {
     setTiles((prev) => {
       let newTiles = structuredClone(prev);
@@ -42,9 +42,14 @@ function App() {
     let aliveNeighbors = 0;
     for (let i = x - 1; i <= x + 1; i++) {
       for (let j = y - 1; j <= y + 1; j++) {
-        if (i < 0 || j < 0 || i >= state.tilesPerRow || j >= state.tilesPerRow)
+        if (
+          i < 0 ||
+          j < 0 ||
+          i >= state.tilesPerRow ||
+          j >= state.tilesPerRow ||
+          (i == x && j == y)
+        )
           continue;
-
         if (tiles[i][j].activated) aliveNeighbors += 1;
       }
     }
@@ -56,17 +61,21 @@ function App() {
     }
     return false;
   };
+
   const updateTiles = () => {
-    setTiles((prev) => {
-      let newTiles = structuredClone(prev);
-      for (let x = 0; x < state.tilesPerRow; x++) {
-        for (let y = 0; y < state.tilesPerRow; y++) {
-          newTiles[x][y].activated = willLive(x, y);
+    if (state.running) {
+      setTiles((prev) => {
+        let newTiles = structuredClone(prev);
+        for (let x = 0; x < state.tilesPerRow; x++) {
+          for (let y = 0; y < state.tilesPerRow; y++) {
+            newTiles[x][y].activated = willLive(x, y);
+          }
         }
-      }
-      return newTiles;
-    });
+        return newTiles;
+      });
+    }
   };
+
   const handleClick = () => {
     if (!state.running) {
       setState((prev) => {
@@ -74,10 +83,8 @@ function App() {
         newState.running = true;
         return newState;
       });
-      intervalID = setInterval(updateTiles, state.updateInterval);
     } else {
-      clearInterval(intervalID);
-
+      // clearInterval(intervalID);
       setState((prev) => {
         let newState = structuredClone(prev);
         newState.running = false;
@@ -85,6 +92,7 @@ function App() {
       });
     }
   };
+  intervalID = setInterval(updateTiles, state.updateInterval);
 
   return (
     <div className="App">
